@@ -14,5 +14,5 @@ jobs:
         with:
           node-version: '20'
       - run: npm install -g actions-up
-      - run: npx actions-up --dry-run
+      - run: npx actions-up 
           
