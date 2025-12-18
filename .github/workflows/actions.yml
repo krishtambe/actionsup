@@ -14,5 +14,13 @@ jobs:
         with:
           node-version: '20'
       - run: npm install -g actions-up
-      - run: npx actions-up 
-          
+      # - run: npx actions-up 
+
+      - name: Update workflow with SHA Pinning
+        run: |
+          if [ -d ".github/workflows" ]; then
+             echo "Running actions-up with SHA Pinning"
+             npx actions-up --update --all --pin || true
+          else 
+             echo "Skipping (no workflows found)"
+          fi 
