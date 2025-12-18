@@ -26,15 +26,19 @@ jobs:
             echo "No workflows found, skipping"
           fi
 
-      - name: Commit and push changes
+      - name: Commit and push changes using PAT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIT_PAT }}
         run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
+          git config user.name "Krish Tambe"
+          git config user.email "krishtambe@users.noreply.github.com"
 
           if git status --porcelain | grep .; then
             git add .github/workflows
             git commit -m "chore: update GitHub Actions versions"
-            git push https://${GITHUB_TOKEN}@github.com/krishtambe/actionsup.git
+
+            git remote add auth-origin https://${GITHUB_TOKEN}@github.com/krishtambe/actionsup.git
+            git push auth-origin main
           else
-            echo "No workflow changes to commit"
+            echo "No changes to commit"
           fi 
