@@ -20,7 +20,7 @@ jobs:
         run: |
           if [ -d ".github/workflows" ]; then
              echo "Running actions-up with SHA Pinning"
-             npx actions-up -y --all --pin || true
+             npx actions-up -y --pin || true
           else 
              echo "Skipping (no workflows found)"
           fi 
