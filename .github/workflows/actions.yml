@@ -5,6 +5,8 @@ on:
 
 jobs:
   check-updates:
+    env: 
+      GITHUB_TOKEN: ${{ secrets.GIT_PAT }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
