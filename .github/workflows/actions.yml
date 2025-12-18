@@ -21,7 +21,7 @@ jobs:
           set +e
           if [ -d ".github/workflows" ]; then
             echo "Running actions-up with SHA pinning"
-            npx actions-up -y --pin || true
+            npx actions-up -y || true
           else
             echo "No workflows found, skipping"
           fi
@@ -33,7 +33,7 @@ jobs:
 
           if git status --porcelain | grep .; then
             git add .github/workflows
-            git commit -m "chore: update GitHub Actions versions (SHA pinned)"
+            git commit -m "chore: update GitHub Actions versions"
             git push
           else
             echo "No workflow changes to commit"
