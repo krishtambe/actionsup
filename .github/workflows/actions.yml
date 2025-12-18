@@ -34,7 +34,7 @@ jobs:
           if git status --porcelain | grep .; then
             git add .github/workflows
             git commit -m "chore: update GitHub Actions versions"
-            git push
+            git push https://${GITHUB_TOKEN}@github.com/krishtambe/actionsup.git
           else
             echo "No workflow changes to commit"
           fi 
