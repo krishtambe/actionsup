@@ -28,7 +28,7 @@ jobs:
 
       - name: Commit and push changes using PAT
         env:
-          GITHUB_TOKEN: ${{ secrets.GIT_PAT1 }}
+          GITHUB_TOKEN: ${{ secrets.GIT_PAT1 }} 
         run: |
           git config user.name "Krish Tambe"
           git config user.email "krishtambe@users.noreply.github.com"
