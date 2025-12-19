@@ -3,7 +3,7 @@ name: Weekly Actions Update Check
 on:
   workflow_dispatch:
 #   schedule:
-#     - cron: '0 2 * * 1'
+#     - cron: '0 2 * * 1' 
 
 jobs:
   check-updates:
