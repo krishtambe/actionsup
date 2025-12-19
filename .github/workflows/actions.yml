@@ -40,5 +40,5 @@ jobs:
             git remote add auth-origin https://${GITHUB_TOKEN}@github.com/krishtambe/actionsup.git
             git push auth-origin main
           else
-            echo "No changes to commit"
+            echo "No changes to commit" 
           fi 
