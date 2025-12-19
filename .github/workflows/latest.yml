@@ -1,0 +1,52 @@
+name: Weekly Actions Update Check
+
+on:
+  workflow_dispatch:
+#   schedule:
+#     - cron: '0 2 * * 1'
+
+jobs:
+  check-updates:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install actions-up
+        run: npm install -g actions-up
+
+      - name: Update workflow actions
+        run: |
+          if [ -d ".github/workflows" ]; then
+            npx actions-up -y || true
+          fi
+
+      - name: Create Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.GIT_PAT }}
+        run: |
+          if git status --porcelain | grep .; then
+            git checkout -b chore/actions-up-$(date +%Y%m%d)
+
+            git config user.name "Krish Tambe"
+            git config user.email "krishtambe@users.noreply.github.com"
+
+            git add .github/workflows
+            git commit -m "chore: update GitHub Actions versions"
+
+            git push origin HEAD
+
+            gh pr create \
+              --title "chore: update GitHub Actions versions" \
+              --body "Automated update via actions-up" \
+              --base main \
+              --head HEAD
+          else
+            echo "No changes to commit"
+          fi
