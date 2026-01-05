@@ -13,13 +13,13 @@ jobs:
 
     steps:
       - name: 'Checkout repo on branch: ${{ github.REF }}' 
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
         with:
           ref: ${{ github.REF }}
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
           node-version: '20'
 
