@@ -63,7 +63,7 @@ jobs:
         if: steps.check.outputs['update-found'] == 'true'
         run: |
           git add .github/workflows || true
-          if: git diff --checked --quiet; then
+          if: git diff --cached --quiet; then
             echo "No update to commit"
             exit 0
           fi
@@ -83,3 +83,4 @@ jobs:
           rm -rf ./* ./.[^.] ./..?*
           ls -ltra
       
+
