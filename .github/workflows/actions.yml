@@ -73,7 +73,9 @@ jobs:
         if: steps.check.outputs['updates-found'] == 'true'
         run: |
           
-          git push "https://${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}HEAD:main"
+          git push \
+            "https://${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}" \
+             HEAD:main
 
       - name: Clean up workspace
         if: always()
