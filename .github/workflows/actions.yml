@@ -41,6 +41,7 @@ jobs:
             echo "updates-found=true" >> $GITHUB_OUTPUT
           else
             echo "updates-found=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Update workflow actions
         if: steps.check.outputs['update-found'] == 'true'
