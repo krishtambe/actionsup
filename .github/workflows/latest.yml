@@ -2,6 +2,8 @@ name: Weekly Actions Update Check
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
 #   schedule:
 #     - cron: '0 2 * * 1'
 
@@ -10,43 +12,74 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: 'Checkout repo on branch: ${{ github.REF }}' 
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.REF }}
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
+      - name: Get User Name
+        id: userid
+        run: |
+          user: "${{ github.actor }}"
+          gitur=$(echo $user )
+          echo "gitur=$gitur" >> $GITHUB_OUTPUT
+
       - name: Install actions-up
         run: npm install -g actions-up
 
-      - name: Update workflow actions
-        run: |
-          if [ -d ".github/workflows" ]; then
-            npx actions-up -y || true
-          fi
-
-      - name: Create Pull Request
-        env:
-          GH_TOKEN: ${{ secrets.GIT_PAT }}
-        run: |
-          if git status --porcelain | grep .; then
-            git checkout -b chore/actions-up-$(date +%Y%m%d)
-
-            git config user.name "Krish Tambe"
-            git config user.email "krishtambe@users.noreply.github.com"
-
-            git add .github/workflows
-            git commit -m "chore: update GitHub Actions versions"
-
-            git push origin HEAD
-
-            gh pr create \
-              --title "chore: update GitHub Actions versions" \
-              --body "Automated update via actions-up" \
-              --base main \
-              --head HEAD
+      - name: Check for outdated actions
+        id: check
+        run: | 
+          actions-up --dry-run > actions-up-raw.txt 2>&1 || true
+          if [ -s actions-up-raw.txt ]; then
+            echo "updates-found=true" >> $GITHUB_OUTPUT
           else
-            echo "No changes to commit"
+            echo "updates-found=false" >> $GITHUB_OUTPUT
+
+      - name: Update workflow actions
+        if: steps.check.outputs['update-found'] == 'true'
+        run: |
+          echo "Checking and updating GitHub Actions..."
+          npx actions-up -y || true
+
+      - name: Configure Git
+        env:
+          GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        working-directory: ${{github.workspace}}
+        run: |
+          if git status --porcelian | grep .; then
+            git checkout main
+            git congig user.name "${{steps.userid.outputs.gitur}}"
+            git config user.email "${{steps.userid.outputs.gitur}}}@gmail.com"
           fi
+
+      - name: Commit Changes
+        if: steps.check.outputs['update-found'] == 'true'
+        run: |
+          git add .github/workflows || true
+          if: git diff --checked --quiet; then
+            echo "No update to commit"
+            exit 0
+          fi
+
+      - name: Push branch using Classic PAT
+        if: steps.check.outputs['update-found'] == 'true'
+        run: |
+          git config --global credential.helper
+
+          git push "https://${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}HEAD:main"
+
+      - name: Clean up workspace
+        if: always()
+        run: |
+          ls -ltra 
+          echo "Cleaning up workspace and hidden files/folders"
+          rm -rf ./* ./.[^.] ./..?*
+          ls -ltra
+      
