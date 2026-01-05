@@ -72,8 +72,7 @@ jobs:
       - name: Push branch using Classic PAT
         if: steps.check.outputs['updates-found'] == 'true'
         run: |
-          git config --global credential.helper
-
+          
           git push "https://${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}HEAD:main"
 
       - name: Clean up workspace
