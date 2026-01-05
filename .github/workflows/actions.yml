@@ -56,7 +56,7 @@ jobs:
         run: |
           if git status --porcelain | grep .; then
             git checkout main
-            git congig user.name "${{steps.userid.outputs.gitur}}"
+            git config user.name "${{steps.userid.outputs.gitur}}"
             git config user.email "${{steps.userid.outputs.gitur}}}@gmail.com"
           fi
 
