@@ -26,7 +26,7 @@ jobs:
       - name: Get User Name
         id: userid
         run: |
-          user: "${{ github.actor }}"
+          user="${{ github.actor }}"
           gitur=$(echo $user )
           echo "gitur=$gitur" >> $GITHUB_OUTPUT
 
