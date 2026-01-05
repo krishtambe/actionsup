@@ -31,7 +31,9 @@ jobs:
           echo "gitur=$gitur" >> $GITHUB_OUTPUT
 
       - name: Install actions-up
-        run: npm install -g actions-up
+        run: | 
+          npm config set //npm.pkg.github.com/:_authToken=${{secrets.GITHUB_TOKEN}}
+          npm install -g actions-up
 
       - name: Check for outdated actions
         id: check
