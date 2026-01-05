@@ -44,7 +44,7 @@ jobs:
           fi
 
       - name: Update workflow actions
-        if: steps.check.outputs['update-found'] == 'true'
+        if: steps.check.outputs['updates-found'] == 'true'
         run: |
           echo "Checking and updating GitHub Actions..."
           npx actions-up -y || true
@@ -54,14 +54,14 @@ jobs:
           GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
         working-directory: ${{github.workspace}}
         run: |
-          if git status --porcelian | grep .; then
+          if git status --porcelain | grep .; then
             git checkout main
             git congig user.name "${{steps.userid.outputs.gitur}}"
             git config user.email "${{steps.userid.outputs.gitur}}}@gmail.com"
           fi
 
       - name: Commit Changes
-        if: steps.check.outputs['update-found'] == 'true'
+        if: steps.check.outputs['updates-found'] == 'true'
         run: |
           git add .github/workflows || true
           if: git diff --checked --quiet; then
@@ -70,7 +70,7 @@ jobs:
           fi
 
       - name: Push branch using Classic PAT
-        if: steps.check.outputs['update-found'] == 'true'
+        if: steps.check.outputs['updates-found'] == 'true'
         run: |
           git config --global credential.helper
 
